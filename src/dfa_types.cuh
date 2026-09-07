@@ -68,16 +68,16 @@ int get_next_state(const DFADevice& dfa, int state, int token_id) {
     return cur;
 }
 
-// Host-side mirror of DFADevice that owns pinned/device allocations.
+// Host-side mirror of DFADevice that owns heap/device allocations.
 struct DFAHost {
-    DFADevice device;          // struct with device pointers, ready to copy to GPU
+    DFADevice device;            // struct with device pointers, ready to pass to kernel
     DFAConfig config;
 
-    // Flat host-side copies for inspection/debugging
-    int32_t* h_transitions;    // [num_states * ALPHABET_SIZE]
-    uint32_t* h_bitmasks;      // [num_states * bitmask_words]
+    int32_t*  h_transitions;     // [num_states * ALPHABET_SIZE]
+    uint32_t* h_bitmasks;        // [num_states * bitmask_words]
     uint8_t*  h_token_bytes;
     int32_t*  h_token_byte_offsets;
+    bool*     h_accepting;       // [num_states] -- true if state is an accepting state
     int       total_token_bytes;
 };
 
